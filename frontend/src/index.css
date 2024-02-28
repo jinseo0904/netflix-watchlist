@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+@font-face {
+  font-family: "NfSans";
+  src: url("../fonts/NetflixSans-Regular.otf");
+}
+
+@font-face {
+  font-family: "NfSans-Bold";
+  src: url("../fonts/NetflixSans-Bold.otf");
+}
+
+@font-face {
+  font-family: "NfSans-Light";
+  src: url("../fonts/NetflixSans-Light.otf");
+}
