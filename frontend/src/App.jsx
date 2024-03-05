@@ -1,15 +1,23 @@
 import './App.css'
+import { BrowserRouter, Routes, Route} from 'react-router-dom'
+import Home from './pages/Home';
+import Login from './pages/Login';
+import { AuthProvider, RequireAuth } from 'react-auth-kit';
 
 function App() {
 
   return (
-    <div>
-      <h1 className="text-3xl font-nfsans text-red-600 font-bold">
-      Netflix Watchlist
-    </h1>
-    <h2 className='font-nfbold text-white'>welcome, Jinseo.</h2>
-    <h2 className='font-nflight text-white'>This is a light font.</h2>
-    </div>
+    <AuthProvider 
+      authType={'cookie'}
+      authName={'_auth'}
+      cookieDomain={window.location.hostname}
+      cookieSecure={false}
+    >
+      <Routes>
+      <Route path ='/' element={<RequireAuth loginPath='/login'><Home /></RequireAuth>}/>
+      <Route path ='/login' element={<Login />}/>
+    </Routes>
+    </AuthProvider>
   )
 }
 
