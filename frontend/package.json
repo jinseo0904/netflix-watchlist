@@ -10,13 +10,19 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@emotion/styled": "^11.11.0",
+    "@mui/icons-material": "^5.15.12",
+    "@mui/material": "^5.15.12",
     "axios": "^1.6.7",
     "formik": "^2.4.5",
+    "framer-motion": "^11.0.8",
     "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-auth-kit": "^2.12.7",
     "react-dom": "^18.2.0",
+    "react-modal": "^3.16.1",
     "react-router-dom": "^6.22.2",
+    "react-transition-group": "^4.4.5",
     "styled-components": "^6.1.8"
   },
   "devDependencies": {
