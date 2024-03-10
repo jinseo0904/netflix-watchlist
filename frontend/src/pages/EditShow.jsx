@@ -61,7 +61,7 @@ const EditShow = () => {
       }
 
       const response = await Promise.race([
-        axios.patch(`http://localhost:5555/watchlist/editShow/${id}`, showPatchData),
+        axios.patch(`https://watchlist-dorb.onrender.com/watchlist/editShow/${id}`, showPatchData),
         timeout(3000) // 3000 milliseconds = 3 seconds
       ]);
 

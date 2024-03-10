@@ -42,7 +42,7 @@ const Home = () => {
 
     const fetchShowList = async () => {
         try {
-            const response = await axios.get(`http://localhost:5555/watchlist/${userInfo.id}`);
+            const response = await axios.get(`https://watchlist-dorb.onrender.com/watchlist/${userInfo.id}`);
             setWatchlist(response.data); // Make sure to use response.data
             setListLoading(false);
         } catch (error) {
@@ -69,7 +69,7 @@ const Home = () => {
             if (userEmail) {
                 try {
                     // Make an API call to fetch user information
-                    const response = await axios.get(`http://localhost:5555/users/userid?email=${encodeURIComponent(userEmail)}`);
+                    const response = await axios.get(`https://watchlist-dorb.onrender.com/users/userid?email=${encodeURIComponent(userEmail)}`);
 
                     // Update state with the response data
                     setUserInfo(response.data);
@@ -94,7 +94,7 @@ const Home = () => {
     const apiDeleteRequest = async () => {
         try {
             const response = await Promise.race([
-                axios.delete(`http://localhost:5555/watchlist/removeShow/${userInfo.id}`, {
+                axios.delete(`https://watchlist-dorb.onrender.com/watchlist/removeShow/${userInfo.id}`, {
                     data: { showId: selectedShowId }, // Specify the data to be sent in the request's body
                     timeout: 3000, // Specifies the number of milliseconds before the request times out.
                 }),
@@ -120,7 +120,7 @@ const Home = () => {
             }
 
             const response = await Promise.race([
-                axios.patch(`http://localhost:5555/watchlist/editShow/${userInfo.id}`, showPatchData),
+                axios.patch(`https://watchlist-dorb.onrender.com/watchlist/editShow/${userInfo.id}`, showPatchData),
                 timeout(3000) // 3000 milliseconds = 3 seconds
             ]);
 
@@ -196,7 +196,7 @@ const Home = () => {
             }
 
             const response = await Promise.race([
-                axios.patch(`http://localhost:5555/watchlist/editShow/${userInfo.id}`, showPatchData),
+                axios.patch(`https://watchlist-dorb.onrender.com/watchlist/editShow/${userInfo.id}`, showPatchData),
                 timeout(3000) // 3000 milliseconds = 3 seconds
             ]);
 

@@ -44,7 +44,7 @@ const AddShow = () => {
             if (userEmail) {
                 try {
                     // Make an API call to fetch user information
-                    const response = await axios.get(`http://localhost:5555/users/userid?email=${encodeURIComponent(userEmail)}`);
+                    const response = await axios.get(`https://watchlist-dorb.onrender.com/users/userid?email=${encodeURIComponent(userEmail)}`);
 
                     // Update state with the response data
                     setUserInfo(response.data);
@@ -81,7 +81,7 @@ const AddShow = () => {
         try {
             const newRating = rating === "" ? 5 : rating;
             const response = await Promise.race([
-                axios.post(`http://localhost:5555/watchlist/addShow/${userInfo.id}`, {
+                axios.post(`https://watchlist-dorb.onrender.com/watchlist/addShow/${userInfo.id}`, {
                     title: title,
                     rating: newRating,
                     note: note,

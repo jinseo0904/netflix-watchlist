@@ -37,7 +37,7 @@ const Signup = () => {
             console.log(lastName);
             console.log(email);
             const response = await Promise.race([
-                axios.post('http://localhost:5555/users/register', {
+                axios.post('https://watchlist-dorb.onrender.com/users/register', {
                     firstName: firstName,
                     lastName: lastName,
                     email: email,

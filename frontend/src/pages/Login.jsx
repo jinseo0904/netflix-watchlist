@@ -35,7 +35,7 @@ const Login = () => {
             console.log(email);
             console.log(password);
             const response = await Promise.race([
-                axios.post('http://localhost:5555/users/login', {
+                axios.post('https://watchlist-dorb.onrender.com/users/login', {
                     email: email,
                     password: password
                 }),
