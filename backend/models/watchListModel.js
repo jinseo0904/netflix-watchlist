@@ -7,8 +7,10 @@ const showSchema = mongoose.Schema({
         required: true
     },
     watched: {
-        type: Boolean,
-        default: false
+        type: String,
+        required: true,
+        enum: ['watched', 'watching', 'not watched'],
+        default: 'not watched' // Assuming 'not watched' as the default state
     },
     rating: {
         type: Number,

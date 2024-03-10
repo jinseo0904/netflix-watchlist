@@ -11,6 +11,7 @@ import timeout from '../components/CustomTimeout';
 import InfoModal from '../components/InfoModal';
 import DeleteModal from '../components/DeleteModal';
 import WatchButton from '../components/WatchButton';
+import StarRating from '../components/StarRating';
 
 const Home = () => {
     const signOut = useSignOut();
@@ -110,10 +111,11 @@ const Home = () => {
 
     const handleWatchShow = async (id, watch_status) => {
         try {
+            const newStatus = (watch_status === 'watched' ? 'not watched' : (watch_status === 'not watched' ? 'watching' : 'watched'));
             const showPatchData = {
                 showId: id,
                 newDetails: {
-                    watched: !watch_status
+                    watched: newStatus
                 }
             }
 
@@ -178,6 +180,34 @@ const Home = () => {
         }, 200);
     }
 
+    const handleEditPageOpen = () => {
+        navigate(`/editshow/${userInfo.id}`, { state: selectedShow });
+        handleInfoClose();
+    }
+
+    const changeRating = async (id, newRating) => {
+        console.log(newRating);
+        try {
+            const showPatchData = {
+                showId: id,
+                newDetails: {
+                    rating: newRating
+                }
+            }
+
+            const response = await Promise.race([
+                axios.patch(`http://localhost:5555/watchlist/editShow/${userInfo.id}`, showPatchData),
+                timeout(3000) // 3000 milliseconds = 3 seconds
+            ]);
+
+            // refresh the page
+            fetchShowList();
+
+        } catch (error) {
+            console.error('An Error occurred while handling the request:', error.response ? error.response.data : error.message);
+        }
+    }
+
     return (
         <motion.div
             key="modal"
@@ -225,12 +255,14 @@ const Home = () => {
                         <ul>
                             {watchlist.map((show) => (
                                 <div key={show._id} className='transition ease-in-out duration-300 hover:bg-gray-800 items-center mb-2 rounded-xl font-nfsans bg-gray-900 p-4 flex justify-between text-white'>
-                                    <h2 className='text-left pl-4 text-2xl w-2/3'>{show.title}</h2>
+                                    <h2 className='text-left pl-4 text-2xl w-3/5'>{show.title}</h2>
                                     <WatchButton 
                                     watched={show.watched}
                                     id={show._id}
                                     handleClick={handleWatchShow}/>
-                                    <p className='text-2xl text-red-600 mr-3 ml-3'>{renderRatingStars(show.rating)}</p>
+                                    <StarRating 
+                                    show={show}
+                                    handleClick={changeRating}/>
                                     <div className='flex gap-3 mr-3'>
                                         <InfoOutlinedIcon fontSize="large" sx={{ color: blueGrey[200] }} onClick={() => handleInfoClick(show)} />
                                         <DeleteOutlinedIcon fontSize="large" sx={{ color: red[600] }} onClick={() => handleShowClick(show._id, show.title)} />
@@ -249,6 +281,7 @@ const Home = () => {
                 <InfoModal
                 isModalOpen={infoModalOpen}
                 handleCloseModal={handleInfoClose}
+                openEditPage={handleEditPageOpen}
                 show={selectedShow} />
             </div>
         </motion.div>

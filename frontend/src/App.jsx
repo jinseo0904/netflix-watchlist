@@ -6,6 +6,7 @@ import Signup from './pages/Signup';
 import AddShow from './pages/AddShow';
 import { AuthProvider, RequireAuth } from 'react-auth-kit';
 import { AnimatePresence } from "framer-motion";
+import EditShow from './pages/EditShow';
 
 function App() {
 
@@ -22,6 +23,7 @@ function App() {
       <Routes>
       <Route path ='/' element={<RequireAuth loginPath='/login'><Home /></RequireAuth>}/>
       <Route path ='/add' element={<RequireAuth loginPath='/login'><AddShow /></RequireAuth>}/>
+      <Route path="/editshow/:id" element={<RequireAuth loginPath='/login'><EditShow /></RequireAuth>} />
       <Route path ='/login' element={<Login />}/>
       <Route path ='/signup' element={<Signup />}/>
     </Routes>

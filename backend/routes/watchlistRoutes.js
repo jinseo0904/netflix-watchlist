@@ -50,7 +50,7 @@ router.post('/addShow/:id', async (request, response) => {
 
         // Find the watchlist by userID and add the new show
         const updatedWatchlist = await Watchlist.findOneAndUpdate(
-            { userID: id}, 
+            { userID: id },
             { $push: { shows: { title, watched, rating, note, thumbnail } } },
             { new: true, runValidators: true } // Options: return the updated document and run schema validators
         );
@@ -82,7 +82,7 @@ router.delete('/removeShow/:userId', async (request, response) => {
 
         // Find the watchlist by userID and remove the show
         const updatedWatchlist = await Watchlist.findOneAndUpdate(
-            { userID: userId }, 
+            { userID: userId },
             { $pull: { shows: { _id: showId } } }, // Adjust the condition as needed to uniquely identify the show
             { new: true } // Return the updated document
         );
@@ -94,6 +94,37 @@ router.delete('/removeShow/:userId', async (request, response) => {
         return response.status(200).json({
             message: 'Show removed successfully',
             updatedWatchlist
+        });
+    } catch (error) {
+        console.log(error.message);
+        response.status(500).send({ message: error.message });
+    }
+});
+
+// get information on a specific show
+// get the watchlist for a single individual
+router.get('/showInfo/:userId/:showId', async (request, response) => {
+    try {
+        const { userId } = request.params;
+        const { showId } = request.params; // Assuming the title to identify the show and newDetails contains the updated show details
+
+        // Validate the input
+        if (!showId) { // Ensure there's enough information to identify the show and the new details to update
+            return response.status(400).json({ message: 'A valid showId is required' });
+        }
+
+        // Find the watchlist by userID and update the specific show
+        const updatedWatchlist = await Watchlist.findOne(
+            { userID: userId, 'shows._id': showId },
+            { 'shows.$': 1 });
+
+        if (!updatedWatchlist) {
+            return response.status(404).json({ message: 'Watchlist or show not found with the given criteria' });
+        }
+
+        const matchingShow = updatedWatchlist.shows[0];
+        return response.status(200).json({
+            matchingShow
         });
     } catch (error) {
         console.log(error.message);
@@ -120,7 +151,7 @@ router.patch('/editShow/:userId', async (request, response) => {
 
         // Find the watchlist by userID and update the specific show
         const updatedWatchlist = await Watchlist.findOneAndUpdate(
-            { userID: userId, 'shows._id': showId }, 
+            { userID: userId, 'shows._id': showId },
             { $set: update },
             { new: true } // Return the modified document
         );
