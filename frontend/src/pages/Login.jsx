@@ -32,8 +32,6 @@ const Login = () => {
         try {
 
             // Replace `localhost:5555` with the correct domain if needed, and ensure you're using `http://` or `https://`
-            console.log(email);
-            console.log(password);
             const response = await Promise.race([
                 axios.post('https://watchlist-dorb.onrender.com/users/login', {
                     email: email,

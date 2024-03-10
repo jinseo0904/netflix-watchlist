@@ -6,6 +6,7 @@ import axios from 'axios';
 import { motion } from "framer-motion"
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
+import CircularProgress from '@mui/joy/CircularProgress';
 import { red, blueGrey, blue } from '@mui/material/colors';
 import timeout from '../components/CustomTimeout';
 import InfoModal from '../components/InfoModal';
@@ -38,43 +39,56 @@ const Home = () => {
             setListLoading(false); // Ensure to handle loading state correctly
         }
     };
+    
+    const fetchUserData = async () => {
+        // Fetch the user email from the cookie
+        const userCookie = Cookies.get('_auth_state'); // Adjust 'userEmail' based on your cookie name
+    
+        if (!userCookie) {
+            console.error('User cookie not found');
+            return; // Exit the function if the cookie doesn't exist
+        }
+    
+        let userEmail;
+    
+        try {
+            const parsedCookieValue = JSON.parse(userCookie);
+            userEmail = parsedCookieValue.email;
+        } catch (error) {
+            console.error('Error parsing userEmail cookie:', error);
+            return; // Exit if parsing fails
+        }
+    
+        if (userEmail) {
+            try {
+                // Make an API call to fetch user information
+                const response = await axios.get(`https://watchlist-dorb.onrender.com/users/userid?email=${encodeURIComponent(userEmail)}`);
+    
+                // Update state with the response data
+                setUserInfo(response.data);
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+                // Handle error (e.g., show an error message)
+            }
+        }
+    };
 
     useEffect(() => {
-        // Function to fetch user data
-        const fetchUserData = async () => {
-            // Fetch the user email from the cookie
-            const userCookie = Cookies.get('_auth_state'); // Adjust 'userEmail' based on your cookie name
-        
-            if (!userCookie) {
-                console.error('User cookie not found');
-                return; // Exit the function if the cookie doesn't exist
-            }
-        
-            let userEmail;
-        
-            try {
-                const parsedCookieValue = JSON.parse(userCookie);
-                userEmail = parsedCookieValue.email;
-            } catch (error) {
-                console.error('Error parsing userEmail cookie:', error);
-                return; // Exit if parsing fails
-            }
-        
-            if (userEmail) {
-                try {
-                    // Make an API call to fetch user information
-                    const response = await axios.get(`https://watchlist-dorb.onrender.com/users/userid?email=${encodeURIComponent(userEmail)}`);
-        
-                    // Update state with the response data
-                    setUserInfo(response.data);
-                } catch (error) {
-                    console.error('Error fetching user data:', error);
-                    // Handle error (e.g., show an error message)
-                }
-            }
-        };
-        fetchUserData();
-    }, []); // Empty dependency array means this effect runs only once when the component mounts
+        let attempts = 0;
+        const maxAttempts = 30;
+      
+        const interval = setInterval(() => {
+          const userCookie = Cookies.get('_auth_state');
+          if (userCookie || attempts > maxAttempts) {
+            clearInterval(interval);
+            if (userCookie) fetchUserData();
+          }
+          attempts++;
+        }, 300); // Check every second
+      
+        return () => clearInterval(interval);
+      }, []);
+      
 
     useEffect(() => {
         // Ensure userInfo is not null before attempting to fetch the watchlist
@@ -224,12 +238,12 @@ const Home = () => {
                     </button>
                 </div>
                 {userInfo ? (
-                    <div>
+                    <div className='transition ease-in-out duration-300'>
                         <p className='text-3xl text-white font-nfsans mb-8'>Welcome back, {userInfo.firstName}!</p>
                         {/* Render other user information here */}
                     </div>
                 ) : (
-                    <p className='text-white mb-8'>Loading user information...</p>
+                    <p className='text-white text-xl mb-8'>Loading user information...</p>
                 )}
 
                 <div className='flex justify-end mb-2'>
@@ -242,7 +256,7 @@ const Home = () => {
                 </div>
 
                 {/* watchlist */}
-                {listLoading ? (<p className='text-white mb-8 font-nfsans'>Loading playlist...</p>)
+                {listLoading ? (<CircularProgress variant="soft" color="danger" />)
                     : (
                         <ul>
                             {watchlist.map((show) => (
