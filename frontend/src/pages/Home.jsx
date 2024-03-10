@@ -28,18 +28,6 @@ const Home = () => {
     const [selectedShowId, setSelectedShowId] = useState(null);
     const [selectedShowTitle, setSelectedShowTitle] = useState(null);
 
-    const renderRatingStars = (rating) => {
-        let stars = [];
-        for (let i = 0; i < 5; i++) {
-            if (i < rating) {
-                stars.push(<span key={i}>&#9733;</span>); // Filled star
-            } else {
-                stars.push(<span key={i}>&#9734;</span>); // Unfilled star
-            }
-        }
-        return stars;
-    };
-
     const fetchShowList = async () => {
         try {
             const response = await axios.get(`https://watchlist-dorb.onrender.com/watchlist/${userInfo.id}`);
@@ -56,8 +44,14 @@ const Home = () => {
         const fetchUserData = async () => {
             // Fetch the user email from the cookie
             const userCookie = Cookies.get('_auth_state'); // Adjust 'userEmail' based on your cookie name
+        
+            if (!userCookie) {
+                console.error('User cookie not found');
+                return; // Exit the function if the cookie doesn't exist
+            }
+        
             let userEmail;
-
+        
             try {
                 const parsedCookieValue = JSON.parse(userCookie);
                 userEmail = parsedCookieValue.email;
@@ -65,12 +59,12 @@ const Home = () => {
                 console.error('Error parsing userEmail cookie:', error);
                 return; // Exit if parsing fails
             }
-
+        
             if (userEmail) {
                 try {
                     // Make an API call to fetch user information
                     const response = await axios.get(`https://watchlist-dorb.onrender.com/users/userid?email=${encodeURIComponent(userEmail)}`);
-
+        
                     // Update state with the response data
                     setUserInfo(response.data);
                 } catch (error) {
@@ -78,8 +72,6 @@ const Home = () => {
                     // Handle error (e.g., show an error message)
                 }
             }
-
-
         };
         fetchUserData();
     }, []); // Empty dependency array means this effect runs only once when the component mounts
