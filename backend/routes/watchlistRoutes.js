@@ -41,7 +41,7 @@ router.post('/addShow/:id', async (request, response) => {
     try {
         const { id } = request.params;
         const { title, rating, note, thumbnail } = request.body;
-        const watched = false;
+        const watched = "not watched";
 
         // Validate the input
         if (!title) { // Add more validation as needed
